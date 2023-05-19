@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MasterApps extends Migration
+class CreateMasterAksesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class MasterApps extends Migration
      */
     public function up()
     {
-        Schema::create('master_apps', function (Blueprint $table) {
-            $table->id('app_id');
-            $table->string('nama_app');
-            $table->string('url_app');
-            $table->string('logo_app');
-            $table->integer('status_app');
+        Schema::create('master_akses', function (Blueprint $table) {
+            $table->id('akses_id');
+            $table->integer('app_id');
+            $table->integer('user_id');
+            $table->integer('level_akses'); //null/0 = unauthorized, 1 read, 2 write, 3 edit, 4 delete
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class MasterApps extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('master_migration');
+        Schema::dropIfExists('master_akses');
     }
 }

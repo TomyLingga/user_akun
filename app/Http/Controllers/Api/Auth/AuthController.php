@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
-// use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
@@ -33,7 +32,7 @@ class AuthController extends Controller
             'sub' => $user->id,
             'name' => $user->name,
             'iat' => time(),
-            'exp' => time() + (60 * 60) // token will expire in 1 hour
+            'exp' => time() + (4 * 60 * 60) // token will expire in 1 hour
         ];
 
         $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
@@ -41,21 +40,32 @@ class AuthController extends Controller
         $user->remember_token = $token;
         $user->save();
 
-        $data = new Response(json_encode(['message' => 'Login success']), 200);
-        $data->withCookie(cookie('jwt', $token, time() + (60 * 60)));
-        return $data;
-        
+        return response()->json(['message' => 'Successfully login','token' => $token], 200)
+                        ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
+                        // ->withHeaders([
+                            // 'Content-Type' => 'application/json;charset=utf-8',
+                            // 'Cookie' => $token.'; HttpOnly; Max-Age=',
+                            // 'Access-Control-Allow-Origin' => '*'
+        // ]);
     }
-    // return response()->json([
-    //     'success' => true
-    // ]);
-    // return response()->json([
-    //     'access_token' => $token,
-    //     'token_type' => 'bearer',
-    //     'expires_in' => time() + (60 * 60)
-    // ]);
 
-    public function auth_checker(Request $request){
+    public function logout(Request $request)
+    {   
+        $token = $request->cookie('jwt');
+
+        // Delete the JWT token from the user's record in the database
+        $user = User::where('remember_token', $token)->first();
+        $user->remember_token = null;
+        $user->save();
+
+        // Remove the JWT cookie
+        $cookie = cookie('jwt', null, -1);
+
+        return response()->json(['message' => 'Successfully logged out'], 200)->withCookie($cookie);
+    }
+    
+    public function auth_checker(Request $request)
+    {
         $jwt = $request->header('JWT');
 
         try {
@@ -70,18 +80,6 @@ class AuthController extends Controller
             ]);
         }
         
-    }
-
-    public function logout(Request $request)
-    {
-        // Delete the JWT token from the user's record in the database
-        $user = Auth::guard('api')->user();
-        $user->remember_token = null;
-        $user->save();
-
-        auth('api')->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
     }
 
     //

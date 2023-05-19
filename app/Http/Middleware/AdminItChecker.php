@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 
-class TokenChecker
+class AdminItChecker
 {
     public function handle(Request $request, Closure $next)
     {
@@ -21,7 +21,7 @@ class TokenChecker
                 $user = User::where('remember_token', $jwt)->first();
                 $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
 
-                if ($user && Carbon::now()->timestamp < $decoded->exp) {
+                if ($user && $user->jabatan == 'super_admin' && Carbon::now()->timestamp < $decoded->exp) {
                     return $next($request);
                 }
             } catch (\Exception $e) {
