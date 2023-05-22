@@ -6,9 +6,22 @@ use App\Models\User;
 
 Route::get('/auth-checker', [\App\Http\Controllers\Api\Auth\AuthController::class, 'auth_checker']);
 
-// Route::group(['middleware' => 'auth'], function () {
-    //     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout']);
-    // });
+// Lokasi
+Route::get('/load/prov', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'getProv']);
+Route::get('/detail/prov/{id_prov}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'detailProv']);
+
+Route::get('/load/kabkot/{id_prov}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'getKabKot']);
+Route::get('/detail/kabkot/{id_kabkot}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'detailKabKot']);
+
+Route::get('/load/kec/{id_kabkot}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'getKec']);
+Route::get('/detail/kec/{id_kec}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'detailKec']);
+
+Route::get('/load/kel/{id_kec}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'getKel']);
+Route::get('/detail/kel/{id_kel}', [\App\Http\Controllers\Api\Auth\CrudUserController::class, 'detailKel']);
+
+Route::post('password/reset', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'reset_password']); 
+Route::post('password/update', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'update_password']); 
+
 Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
 Route::group(['middleware' => 'token.checker'], function () {
     Route::get('/redirect', [\App\Http\Controllers\Api\PortalController::class, 'show']);
@@ -22,6 +35,8 @@ Route::group(['middleware' => 'token.checker'], function () {
     Route::get('user', [App\Http\Controllers\Api\Auth\UserController::class, 'index']);
     Route::get('user/login', [App\Http\Controllers\Api\Auth\UserController::class, 'show']);
     Route::get('user/get/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'get']);
+    Route::post('user/update/{id}', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_update']); 
+
 
     //akses
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);
@@ -39,6 +54,12 @@ Route::middleware(['middleware' => 'adminit.checker'])->group(function () {
     Route::get('akses/get/{akses_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'show']);
     Route::post('akses/add', [App\Http\Controllers\Api\Akses\AksesController::class, 'store']);
     Route::post('akses/update/{akses_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'update']); 
+    
+});
+
+Route::middleware(['middleware' => 'adminit.checker', 'adminsdm.checker'])->group(function () {
+    //user
+    Route::post('user/add', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_store']); 
 });
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

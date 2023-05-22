@@ -14,7 +14,7 @@ use Illuminate\Database\QueryException;
 class AppsController extends Controller
 {
     
-    private $image_path = 'http://192.168.0.173:8888/storage/upload/icon/';
+    private $image_path = 'http://36.92.181.10:4763/storage/upload/icon/';
 
     public function index()
     {
@@ -130,7 +130,7 @@ class AppsController extends Controller
             $originalName = $input['logo_app']->getClientOriginalName();
             $newName = time().'_'.str_replace(' ', '_', $originalName);
 
-            if($request->doc_low->move('storage/upload/icon/', $newName ) ) {
+            if($request->logo_app->move('storage/upload/icon/', $newName ) ) {
                 $data->update([
                     'nama_app' => $request->get('nama_app'),
                     'url_app' => $request->get('url_app'),

@@ -14,7 +14,7 @@ use Carbon\Carbon;
 class PortalController extends Controller
 {   
     // private $jwtSecret = "your_jwt_secret_here";
-    private $image_path = 'http://192.168.0.173:8888/storage/upload/icon/';
+    private $image_path = 'http://36.92.181.10:4763/storage/upload/icon/';
     
     public function index()
     {
