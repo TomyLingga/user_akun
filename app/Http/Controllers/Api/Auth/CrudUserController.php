@@ -157,6 +157,7 @@ class CrudUserController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ], 400);
             }
@@ -167,6 +168,7 @@ class CrudUserController extends Controller
             if ($existingEmail) {
                 return response()->json([
                     'message' => 'Email already used.',
+                    'code' => 409,
                     'success' => false
                 ], 409);
             }
@@ -278,12 +280,14 @@ class CrudUserController extends Controller
             return response()->json([
                 'data' => $MasterUser,
                 'message' => 'Data Created Successfully.',
+                'code' => 200,
                 'success' => true
             ], 200);
 
         } catch (QueryException $ex) {
             return response()->json([
                 'message' => 'Failed to create data',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -301,6 +305,7 @@ class CrudUserController extends Controller
             if ($existingEmail) {
                 return response()->json([
                     'message' => 'Email already used.',
+                    'code' => 409,
                     'success' => false
                 ], 409);
             }
@@ -437,11 +442,13 @@ class CrudUserController extends Controller
             return response()->json([
                 'data' => $user,
                 'message' => 'Data Updated Successfully.',
+                'code' => 200,
                 'success' => true
             ], 200);
         } catch (QueryException $ex) {
             return response()->json([
                 'message' => 'Failed to update data',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -456,6 +463,7 @@ class CrudUserController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ], 400);
             }
@@ -463,17 +471,20 @@ class CrudUserController extends Controller
             if (!$user) {
                 return response()->json([
                     'message' => 'Can`t find Email in record.',
+                    'code' => 409,
                     'success' => false
                 ], 409);
             }
             Mail::to($user->email)->send(new ResetPassword($user));
             return response()->json([
                 'message' => 'Reset Password Link sent to Email.',
+                'code' => 200,
                 'success' => true
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Failed to reset password',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -490,6 +501,7 @@ class CrudUserController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ], 400);
             }
@@ -503,11 +515,13 @@ class CrudUserController extends Controller
             return response()->json([
                 'data' => new $data,
                 'message' => 'Data Updated Successfully',
+                'code' => 200,
                 'success' => true
-            ]);
+            ],200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }

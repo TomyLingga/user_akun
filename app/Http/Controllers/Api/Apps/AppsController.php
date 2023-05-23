@@ -25,6 +25,7 @@ class AppsController extends Controller
             if ($datas->isEmpty()) {
                 return response()->json([
                     'message' => 'Record not Found',
+                    'code' => 404,
                     'success' => true
                 ], 404);
             }
@@ -36,10 +37,11 @@ class AppsController extends Controller
             return response()->json([
                 'data' => $datas,
                 'message' => 'Success to Fetch All Datas',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
-            return response()->json(['message' => 'Failed to Fetch All Datas'], 500);
+            return response()->json(['message' => 'Failed to Fetch All Datas', 'code' => 500], 500);
         }
     }
 
@@ -56,6 +58,7 @@ class AppsController extends Controller
                 return response()->json([
                     'data' => [],
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ]);
             }
@@ -72,7 +75,7 @@ class AppsController extends Controller
                     'status_app' => '0'
                 ]);
             }else{
-                return response()->json(['message' => 'Failed to Create Data.'], 500);
+                return response()->json(['message' => 'Failed to Create Data.', 'code' => 500], 500);
             }
 
             return response()->json([
@@ -81,7 +84,7 @@ class AppsController extends Controller
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
-            return response()->json(['message' => 'Failed to Create Data.'], 500);
+            return response()->json(['message' => 'Failed to Create Data.', 'code' => 500], 500);
         }
     }
 
@@ -91,16 +94,17 @@ class AppsController extends Controller
         try{
             $data = MasterApps::where('app_id', $app_id)->first();
             if (is_null($data)) {
-                return response()->json('Record not Found', 404);
+                return response()->json(['message' => 'Record not Found','code' => 404], 404);
             }
             $data->logo_app = $this->image_path.$data->logo_app;
             return response()->json([
                 'data' => $data,
                 'message' => 'Data Found',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
-            return response()->json(['message' => 'Failed to Get Data'], 500);
+            return response()->json(['message' => 'Failed to Get Data', 'code' => 500], 500);
         }
     }
 
@@ -109,7 +113,7 @@ class AppsController extends Controller
     {
         try{
             if (!DataApps::where('app_id', $app_id)->exists()) {
-                return response()->json('Data not found', 404);
+                return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             $data = DataApps::where('app_id', $app_id)->first();
 
@@ -123,6 +127,7 @@ class AppsController extends Controller
                 return response()->json([
                     'data' => [],
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ]);
             }
@@ -138,16 +143,17 @@ class AppsController extends Controller
                     'status_app' => '0'
                 ]);
             }else{
-                return response()->json(['message' => 'Failed to Update Data.'], 500);
+                return response()->json(['message' => 'Failed to Update Data.', 'code' => 500], 500);
             }
 
             return response()->json([
                 'data' => $data,
                 'message' => 'Data Updated Successfully',
+                'code' => 200,
                 'success' => true
             ],200);
         }catch (\Illuminate\Database\QueryException $ex) {
-            return response()->json(['message' => 'Failed to Update Data'], 500);
+            return response()->json(['message' => 'Failed to Update Data', 'code' => 500], 500);
         }
     }
 
@@ -158,6 +164,7 @@ class AppsController extends Controller
         if (!$data) {
             return response()->json([
                 'message' => 'Record not found.',
+                'code' => 404,
                 'success' => false
             ], 404);
         }
@@ -173,6 +180,7 @@ class AppsController extends Controller
         return response()->json([
             'data' => [],
             'message' => $message,
+            'code' => 200,
             'success' => true
         ],200);
     }

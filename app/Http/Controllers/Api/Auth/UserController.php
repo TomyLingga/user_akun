@@ -28,18 +28,21 @@ class UserController extends Controller
             if ($datas->isEmpty()) {
                 return response()->json([
                     'message' => 'Record not found',
+                    'code' => 200,
                     'success' => true
                 ], 200);
             }
             return response()->json([
                 'data' => $datas,
                 'message' => 'Success to Fetch All Datas',
+                'code' => 200,
                 'success' => true
             ], 200);
 
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -55,11 +58,13 @@ class UserController extends Controller
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -72,11 +77,13 @@ class UserController extends Controller
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }

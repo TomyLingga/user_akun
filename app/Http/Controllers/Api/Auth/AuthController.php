@@ -20,10 +20,10 @@ class AuthController extends Controller
 
         try {
             if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Invalid email or password'], 401);
+                return response()->json(['error' => 'Invalid email or password', 'code' => 401], 401);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Failed to create token'], 500);
+            return response()->json(['error' => 'Failed to create token', 'code' => 500], 500);
         }
 
         $user = auth()->user();
@@ -40,7 +40,7 @@ class AuthController extends Controller
         $user->remember_token = $token;
         $user->save();
 
-        return response()->json(['message' => 'Successfully login','token' => $token], 200)
+        return response()->json(['message' => 'Successfully login','token' => $token, 'code' => 200], 200)
                         ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
                         // ->withHeaders([
                             // 'Content-Type' => 'application/json;charset=utf-8',
@@ -61,7 +61,7 @@ class AuthController extends Controller
         // Remove the JWT cookie
         $cookie = cookie('jwt', null, -1);
 
-        return response()->json(['message' => 'Successfully logged out'], 200)->withCookie($cookie);
+        return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200)->withCookie($cookie);
     }
     
     public function auth_checker(Request $request)
@@ -72,11 +72,13 @@ class AuthController extends Controller
             $user = User::where('remember_token', $jwt)->firstOrFail();
             
             return response()->json([
-                'success' => true
+                'success' => true,
+                'code' => 200
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'success' => false
+                'success' => false,
+                'code' => 500
             ]);
         }
         

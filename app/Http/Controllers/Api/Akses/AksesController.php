@@ -19,18 +19,21 @@ class AksesController extends Controller
             if ($datas->isEmpty()) {
                 return response()->json([
                     'message' => 'Record not found',
-                    'success' => true
+                    'success' => true,
+                    'code' => 200
                 ], 200);
             }
             return response()->json([
                 'data' => $datas,
                 'message' => 'Success to Fetch All Datas',
+                'code' => 200,
                 'success' => true
             ], 200);
 
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -48,6 +51,7 @@ class AksesController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ], 400);
             }
@@ -62,6 +66,7 @@ class AksesController extends Controller
             if ($existingAkses) {
                 return response()->json([
                     'message' => 'Akses with app_id and user_id already exists.',
+                    'code' => 409,
                     'success' => false
                 ], 409);
             }
@@ -75,12 +80,14 @@ class AksesController extends Controller
             return response()->json([
                 'data' => $MasterAkses,
                 'message' => 'Data Created Successfully.',
+                'code' => 200,
                 'success' => true
             ], 200);
 
         } catch (QueryException $ex) {
             return response()->json([
                 'message' => 'Failed to create data',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -91,16 +98,18 @@ class AksesController extends Controller
         try{
             $data = MasterAkses::where('akses_id', '=', $akses_id)->first();
             if (is_null($data)) {
-                return response()->json('Data not found', 404);
+                return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
                 'data' => new MasterAksesResource($data),
                 'message' => 'Data MasterAkses found',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -111,16 +120,18 @@ class AksesController extends Controller
         try{
             $data = MasterAkses::where('app_id', '=', $app_id)->first();
             if (is_null($data)) {
-                return response()->json('Data not found', 404);
+                return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
                 'data' => new MasterAksesResource($data),
                 'message' => 'Data MasterAkses found',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -131,16 +142,18 @@ class AksesController extends Controller
         try{
             $data = MasterAkses::where('user_id', '=', $user_id)->first();
             if (is_null($data)) {
-                return response()->json('Data not found', 404);
+                return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
                 'data' => new MasterAksesResource($data),
                 'message' => 'Data MasterAkses found',
+                'code' => 200,
                 'success' => true
             ], 200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }
@@ -160,6 +173,7 @@ class AksesController extends Controller
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
+                    'code' => 400,
                     'success' => false
                 ], 400);
             }
@@ -171,11 +185,13 @@ class AksesController extends Controller
             return response()->json([
                 'data' => $data,
                 'message' => 'Data Updated Successfully',
+                'code' => 200,
                 'success' => true
             ],200);
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
+                'code' => 500,
                 'success' => false
             ], 500);
         }

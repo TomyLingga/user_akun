@@ -42,11 +42,11 @@ class PortalController extends Controller
                             ->select('id','name','jabatan','divisi','departemen','grade')
                             ->first();
                             
-            $data = new Response(['url' => $url, 'user' => $user], 200);
+            $data = new Response(['url' => $url, 'user' => $user, 'code' => 200], 200);
             // $data->withCookie(cookie('jwt', $token, time() + (60 * 60)));
             return $data;
         }catch (\Illuminate\Database\QueryException $ex) {
-            return response()->json(['message' => 'Failed to Get Data'], 500);
+            return response()->json(['message' => 'Failed to Get Data', 'code' => 500], 500);
         }
     }
 
