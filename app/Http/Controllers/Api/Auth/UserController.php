@@ -51,7 +51,13 @@ class UserController extends Controller
     public function show(Request $request)
     {   
         try{
-            $jwt = $request->cookie('jwt');
+            $authorizationHeader = $request->header('Authorization');
+
+            if (strpos($authorizationHeader, 'Bearer ') === 0) {
+                $jwt = str_replace('Bearer ', '', $authorizationHeader);
+            } else {
+                return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
+            }
             $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
             
             $data = User::select('id', 'name', 'jabatan', 'divisi', 'departemen', 'grade', 'nrk')->findOrFail($decoded->sub);

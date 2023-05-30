@@ -14,7 +14,13 @@ class AdminItChecker
 {
     public function handle(Request $request, Closure $next)
     {
-        $jwt = $request->cookie('jwt');
+        $authorizationHeader = $request->header('Authorization');
+
+            if (strpos($authorizationHeader, 'Bearer ') === 0) {
+                $jwt = str_replace('Bearer ', '', $authorizationHeader);
+            } else {
+                return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
+            }
         
         if ($jwt) {
             try {

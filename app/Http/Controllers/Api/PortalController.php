@@ -11,6 +11,7 @@ use App\Models\MasterApps;
 use App\Models\User;
 use Carbon\Carbon;
 
+
 class PortalController extends Controller
 {   
     // private $jwtSecret = "your_jwt_secret_here";
@@ -29,14 +30,23 @@ class PortalController extends Controller
     public function show(Request $request)
     {   
         try{
-            $data = DataApps::where('app_id', $request->app_id)->first();
-            if (is_null($data)) {
-                return response()->json('Record not Found', 404);
+            // $data = MasterApps::where('app_id', $request->app_id)->first();
+            // if (is_null($data)) {
+            //     return response()->json('Record not Found', 404);
+            // }
+            // $url = $data->url_app;
+            $authorizationHeader = $request->header('Authorization');
+
+            if (strpos($authorizationHeader, 'Bearer ') === 0) {
+                $token = str_replace('Bearer ', '', $authorizationHeader);
+            } else {
+                return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
             }
-            $url = $data->url_app;
-            $token = $request->cookie('jwt');
 
             $decoded = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
+
+            dd($decoded->divisi);
+
 
             $user = User::where('id', $decoded->sub)
                             ->select('id','name','jabatan','divisi','departemen','grade')

@@ -31,6 +31,11 @@ class AuthController extends Controller
         $payload = [
             'sub' => $user->id,
             'name' => $user->name,
+            'jabatan' => $user->jabatan,
+            'departemen' => $user->departemen,
+            'divisi' => $user->divisi,
+            'nrk' => $user->nrk,
+            'grade' => $user->grade,
             'iat' => time(),
             'exp' => time() + (4 * 60 * 60) // token will expire in 1 hour
         ];
@@ -41,35 +46,46 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Successfully login','token' => $token, 'code' => 200], 200)
-                        ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
-                        // ->withHeaders([
-                            // 'Content-Type' => 'application/json;charset=utf-8',
-                            // 'Cookie' => $token.'; HttpOnly; Max-Age=',
-                            // 'Access-Control-Allow-Origin' => '*'
-        // ]);
+                        // ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
+                        ->withHeaders([
+                            'Content-Type' => 'application/json;charset=utf-8',
+                            'Cookie' => $token.'; HttpOnly; Max-Age=',
+                            'Access-Control-Allow-Origin' => '*'
+        ]);
     }
 
     public function logout(Request $request)
     {   
-        $token = $request->cookie('jwt');
+        // $token = $request->cookie('jwt');
+        $authorizationHeader = $request->header('Authorization');
 
-        // Delete the JWT token from the user's record in the database
+        if (strpos($authorizationHeader, 'Bearer ') === 0) {
+            $token = str_replace('Bearer ', '', $authorizationHeader);
+        } else {
+            return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
+        }
+
         $user = User::where('remember_token', $token)->first();
         $user->remember_token = null;
         $user->save();
 
-        // Remove the JWT cookie
-        $cookie = cookie('jwt', null, -1);
+        //set the Authorization value to null
 
-        return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200)->withCookie($cookie);
+        return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200);
     }
     
     public function auth_checker(Request $request)
     {
-        $jwt = $request->header('JWT');
+        $authorizationHeader = $request->header('Authorization');
+
+        if (strpos($authorizationHeader, 'Bearer ') === 0) {
+            $token = str_replace('Bearer ', '', $authorizationHeader);
+        } else {
+            return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
+        }
 
         try {
-            $user = User::where('remember_token', $jwt)->firstOrFail();
+            $user = User::where('remember_token', $token)->firstOrFail();
             
             return response()->json([
                 'success' => true,
