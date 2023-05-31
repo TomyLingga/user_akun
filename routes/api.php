@@ -23,6 +23,7 @@ Route::post('password/reset', [App\Http\Controllers\Api\Auth\CrudUserController:
 Route::post('password/update', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'update_password']); 
 
 Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
+
 Route::group(['middleware' => 'token.checker'], function () {
     Route::get('/redirect', [\App\Http\Controllers\Api\PortalController::class, 'show']);
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout']);
@@ -37,13 +38,12 @@ Route::group(['middleware' => 'token.checker'], function () {
     Route::get('user/get/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'get']);
     Route::post('user/update/{id}', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_update']); 
 
-
     //akses
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);
     Route::get('akses/user/get/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showUser']);
 });
 
-Route::middleware(['middleware' => 'adminit.checker'])->group(function () {
+Route::group(['middleware' => 'adminit.checker'], function () {
     //app
     Route::post('app/add', [App\Http\Controllers\Api\Apps\AppsController::class, 'store']);
     Route::post('app/update/{app_id}', [App\Http\Controllers\Api\Apps\AppsController::class, 'update']);
@@ -57,7 +57,7 @@ Route::middleware(['middleware' => 'adminit.checker'])->group(function () {
     
 });
 
-Route::middleware(['middleware' => 'adminit.checker', 'adminsdm.checker'])->group(function () {
+Route::group(['middleware' => 'adminsdm.checker'], function () {
     //user
     Route::post('user/add', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_store']); 
 });

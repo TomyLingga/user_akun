@@ -79,7 +79,7 @@ class UserController extends Controller
     public function get($id)
     {   
         try{
-            $data = User::select('id', 'name', 'jabatan', 'divisi', 'departemen', 'grade', 'nrk')->findOrFail($id);
+            $data = User::findOrFail($id);
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',

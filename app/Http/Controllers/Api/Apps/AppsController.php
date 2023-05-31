@@ -112,10 +112,10 @@ class AppsController extends Controller
     public function update(Request $request, $app_id)
     {
         try{
-            if (!DataApps::where('app_id', $app_id)->exists()) {
+            if (!MasterApps::where('app_id', $app_id)->exists()) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
-            $data = DataApps::where('app_id', $app_id)->first();
+            $data = MasterApps::where('app_id', $app_id)->first();
 
             $validator = Validator::make($request->all(), [
                 'nama_app' => 'required',
@@ -159,7 +159,7 @@ class AppsController extends Controller
 
     public function togglePost($app_id)
     {
-        $data = DataApps::find($app_id);
+        $data = MasterApps::find($app_id);
 
         if (!$data) {
             return response()->json([
