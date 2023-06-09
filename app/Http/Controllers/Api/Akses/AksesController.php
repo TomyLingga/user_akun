@@ -162,7 +162,7 @@ class AksesController extends Controller
     public function showMine($app_id, $user_id)
     {
         try{
-            $data = MasterAkses::where('user_id', $user_id)->where('app_id', $app_id)->get();
+            $data = MasterAkses::where('user_id', $user_id)->where('app_id', $app_id)->first();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
