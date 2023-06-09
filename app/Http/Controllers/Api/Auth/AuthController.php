@@ -45,7 +45,7 @@ class AuthController extends Controller
         $user->remember_token = $token;
         $user->save();
 
-        return response()->json(['message' => 'Successfully login','token' => $token, 'code' => 200], 200)
+        return response()->json(['message' => 'Successfully login','token' => $token, 'code' => 200, 'payload' => $payload], 200)
                         // ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
                         ->withHeaders([
                             'Content-Type' => 'application/json;charset=utf-8',

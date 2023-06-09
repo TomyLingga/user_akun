@@ -30,6 +30,7 @@ Route::group(['middleware' => 'token.checker'], function () {
 
     //app
     Route::get('app', [App\Http\Controllers\Api\Apps\AppsController::class, 'index']);
+    Route::get('all/app', [App\Http\Controllers\Api\Apps\AppsController::class, 'index_all']);
     Route::get('app/get/{app_id}', [App\Http\Controllers\Api\Apps\AppsController::class, 'show']);
     
     //user
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'token.checker'], function () {
     //akses
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);
     Route::get('akses/user/get/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showUser']);
+    Route::get('akses/mine/{app_id}/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showMine']);
 });
 
 Route::group(['middleware' => 'adminit.checker'], function () {

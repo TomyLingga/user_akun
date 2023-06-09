@@ -20,7 +20,38 @@ class AppsController extends Controller
     {
         try{
             // $datas = MasterApps::where('status_app', '1')->latest()->get();
-            $datas = MasterApps::latest()->get();
+            $datas = MasterApps::where('status_app', '1')
+                                ->orderBy('nama_app')
+                                ->get();
+
+            if ($datas->isEmpty()) {
+                return response()->json([
+                    'message' => 'Record not Found',
+                    'code' => 404,
+                    'success' => true
+                ], 404);
+            }
+
+            foreach ( $datas as $key => $file ) {
+                $file->logo_app = $this->image_path.$file->logo_app;
+            }
+
+            return response()->json([
+                'data' => $datas,
+                'message' => 'Success to Fetch All Datas',
+                'code' => 200,
+                'success' => true
+            ], 200);
+        }catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json(['message' => 'Failed to Fetch All Datas', 'code' => 500], 500);
+        }
+    }
+    
+    public function index_all()
+    {
+        try{
+            $datas = MasterApps::orderBy('nama_app')
+                                ->get();
 
             if ($datas->isEmpty()) {
                 return response()->json([

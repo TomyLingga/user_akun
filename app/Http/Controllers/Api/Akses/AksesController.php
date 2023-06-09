@@ -101,7 +101,7 @@ class AksesController extends Controller
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
-                'data' => new MasterAksesResource($data),
+                'data' => $data,
                 'message' => 'Data MasterAkses found',
                 'code' => 200,
                 'success' => true
@@ -118,12 +118,12 @@ class AksesController extends Controller
     public function showApp($app_id)
     {
         try{
-            $data = MasterAkses::where('app_id', '=', $app_id)->first();
+            $data = MasterAkses::where('app_id', '=', $app_id)->get();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
-                'data' => new MasterAksesResource($data),
+                'data' => $data,
                 'message' => 'Data MasterAkses found',
                 'code' => 200,
                 'success' => true
@@ -140,12 +140,34 @@ class AksesController extends Controller
     public function showUser($user_id)
     {
         try{
-            $data = MasterAkses::where('user_id', '=', $user_id)->first();
+            $data = MasterAkses::where('user_id', '=', $user_id)->get();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
-                'data' => new MasterAksesResource($data),
+                'data' => $data,
+                'message' => 'Data MasterAkses found',
+                'code' => 200,
+                'success' => true
+            ], 200);
+        }catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json([
+                'message' => 'Something went wrong',
+                'code' => 500,
+                'success' => false
+            ], 500);
+        }
+    }
+
+    public function showMine($app_id, $user_id)
+    {
+        try{
+            $data = MasterAkses::where('user_id', $user_id)->where('app_id', $app_id)->get();
+            if (is_null($data)) {
+                return response()->json(['message' => 'Data not found', 'code' => 404], 404);
+            }
+            return response()->json([
+                'data' => $data,
                 'message' => 'Data MasterAkses found',
                 'code' => 200,
                 'success' => true
