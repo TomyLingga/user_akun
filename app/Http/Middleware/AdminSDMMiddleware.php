@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Models\User;
+use App\Models\MasterAkses;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ class AdminSDMMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        $app_id = 16;
         $authorizationHeader = $request->header('Authorization');
 
             if (strpos($authorizationHeader, 'Bearer ') === 0) {
@@ -21,13 +23,16 @@ class AdminSDMMiddleware
             } else {
                 return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
             }
-        
+
         if ($jwt) {
             try {
-                $user = User::where('remember_token', $jwt)->first();
                 $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
 
-                if (($user && $user->jabatan == 'ADM-SDM') || ($user && $user->jabatan == 'super_admin') && Carbon::now()->timestamp < $decoded->exp) {
+                $akses = MasterAkses::where('app_id', $app_id)
+                                        ->where('user_id', $decoded->sub)
+                                        ->first();
+
+                if ($decoded && $akses->level_akses >= 8 && Carbon::now()->timestamp < $decoded->exp) {
                     return $next($request);
                 }else{
                     return response()->json(['error' => 'You do not have access for this', 'code' => 401], 401);

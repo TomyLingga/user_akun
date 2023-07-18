@@ -47,7 +47,7 @@ class AksesController extends Controller
                 'user_id' => 'required',
                 'level_akses' => 'required'
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
@@ -55,28 +55,28 @@ class AksesController extends Controller
                     'success' => false
                 ], 400);
             }
-    
+
             $app_id = $request->get('app_id');
             $user_id = $request->get('user_id');
-    
+
             $existingAkses = MasterAkses::where('app_id', $app_id)
                                         ->where('user_id', $user_id)
                                         ->first();
-    
+
             if ($existingAkses) {
                 return response()->json([
-                    'message' => 'Akses with app_id and user_id already exists.',
+                    'message' => 'Akses for this app and user already exists.',
                     'code' => 409,
                     'success' => false
                 ], 409);
             }
-    
+
             $MasterAkses = MasterAkses::create([
                 'app_id' => $app_id,
                 'user_id' => $user_id,
                 'level_akses' => $request->get('level_akses')
             ]);
-    
+
             return response()->json([
                 'data' => $MasterAkses,
                 'message' => 'Data Created Successfully.',
