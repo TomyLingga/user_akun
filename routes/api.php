@@ -66,6 +66,17 @@ Route::group(['middleware' => 'token.checker'], function () {
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);
     Route::get('akses/user/get/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showUser']);
     Route::get('akses/mine/{app_id}/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showMine']);
+
+    //divisi
+    Route::get('division', [App\Http\Controllers\Api\Position\DivisionController::class, 'index']);
+    Route::get('division/get/{id}', [App\Http\Controllers\Api\Position\DivisionController::class, 'show']);
+
+    //dept
+    Route::get('department', [App\Http\Controllers\Api\Position\DepartmentController::class, 'index']);
+    Route::get('department/get/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'show']);
+    Route::get('department/get-division/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'showByDivisi']);
+
+
 });
 
 Route::group(['middleware' => 'adminit.checker'], function () {
@@ -88,16 +99,11 @@ Route::group(['middleware' => 'adminsdm.checker'], function () {
 
     //divisi
     Route::get('division/bom', [App\Http\Controllers\Api\Position\DivisionController::class, 'bom']);
-    Route::get('division', [App\Http\Controllers\Api\Position\DivisionController::class, 'index']);
-    Route::get('division/get/{id}', [App\Http\Controllers\Api\Position\DivisionController::class, 'show']);
     Route::post('division/add', [App\Http\Controllers\Api\Position\DivisionController::class, 'store']);
     Route::post('division/update/{id}', [App\Http\Controllers\Api\Position\DivisionController::class, 'update']);
     Route::post('division/active/{id}', [App\Http\Controllers\Api\Position\DivisionController::class, 'toggleActive']);
 
     //departement
-    Route::get('department', [App\Http\Controllers\Api\Position\DepartmentController::class, 'index']);
-    Route::get('department/get/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'show']);
-    Route::get('department/get-division/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'showByDivisi']);
     Route::post('department/add', [App\Http\Controllers\Api\Position\DepartmentController::class, 'store']);
     Route::post('department/update/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'update']);
     Route::post('department/active/{id}', [App\Http\Controllers\Api\Position\DepartmentController::class, 'toggleActive']);
