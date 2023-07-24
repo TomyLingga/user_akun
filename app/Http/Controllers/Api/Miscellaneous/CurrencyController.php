@@ -4,11 +4,17 @@ namespace App\Http\Controllers\Api\Miscellaneous;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class CurrencyController extends Controller
 {
     function kurs() {
-        $url = "https://www.bi.go.id/biwebservice/wskursbi.asmx/getSubKursAsing3?mts=USD&startdate=2023-06-21&enddate=2023-06-21";
+
+        $currentDate = Carbon::now();
+        $formattedDate = $currentDate->format('Y-m-d');
+
+        $url = "https://www.bi.go.id/biwebservice/wskursbi.asmx/getSubKursAsing3?mts=USD&startdate={$formattedDate}&enddate={$formattedDate}";
         $xmlString = file_get_contents($url);
 
         $xml = simplexml_load_string($xmlString);
