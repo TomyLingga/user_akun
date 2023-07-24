@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\MasterAkses;
+use App\Models\MasterApps;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Mail;
 
 
 class CrudUserController extends Controller
-{   
+{
     private $profil_path = 'http://36.92.181.10:4763/storage/upload/profil/';
     private $ttd_path = 'http://36.92.181.10:4763/storage/upload/ttd/';
     // Provinsi
@@ -120,9 +122,9 @@ class CrudUserController extends Controller
     }
 
     public function user_store(Request $request)
-    {   
+    {
         try {
-            
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => 'required',
@@ -153,7 +155,7 @@ class CrudUserController extends Controller
                 'departemen' => 'required',
                 'job_level' => 'required'
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
@@ -161,10 +163,10 @@ class CrudUserController extends Controller
                     'success' => false
                 ], 400);
             }
-    
+
             $existingEmail = User::where('email', $request->email)
                                         ->first();
-    
+
             if ($existingEmail) {
                 return response()->json([
                     'message' => 'Email already used.',
@@ -178,7 +180,7 @@ class CrudUserController extends Controller
             $jsonProvLahir = $tempat_lahir->getContent();
             $data = json_decode($jsonProvLahir, true);
             $kabkot_lahir = $data['nama'];
-            
+
             //prov ktp
             $prov_ktp = $this->detailProv($request->prov_ktp);
             $jsonProvKtp = $prov_ktp->getContent();
@@ -227,10 +229,10 @@ class CrudUserController extends Controller
                 $kel_domisili = $this->detailKel($request->kel_domisili);
                 $jsonKelDomisili = $kel_domisili->getContent();
                 $data = json_decode($jsonKelDomisili, true);
-                $kelDomisili = $data['nama'];   
-            
+                $kelDomisili = $data['nama'];
+
             $final_domisili = $request->alamat_domisili.", Kelurahan ".$kelDomisili.", Kecamatan ".$kecDomisili.", ".$kabkotDomisili.", ".$provDomisili;
-            
+
             $MasterUser = User::create([
                 'name'                  => $request->name,
                 'email'                 => $request->email,
@@ -276,7 +278,19 @@ class CrudUserController extends Controller
                 'klinik_id'             => '2',
                 'created_at'            => Carbon::now()
             ]);
-    
+
+            $apps = MasterApps::all();
+
+            foreach ($apps as $app) {
+                $aksesData = [
+                    'user_id' => $MasterUser->id,
+                    'app_id' => $app->app_id,
+                    'level_akses' => '1',
+                ];
+
+                MasterAkses::create($aksesData);
+            }
+
             return response()->json([
                 'data' => $MasterUser,
                 'message' => 'Data Created Successfully.',
@@ -320,7 +334,7 @@ class CrudUserController extends Controller
             } else {
                 $kabkot_lahir = $user->tempat_lahir;
             }
-            
+
             if ($request->prov_ktp !== null) {
                 //prov ktp
                 $prov_ktp = $this->detailProv($request->prov_ktp);
@@ -375,8 +389,8 @@ class CrudUserController extends Controller
                     $kel_domisili = $this->detailKel($request->kel_domisili);
                     $jsonKelDomisili = $kel_domisili->getContent();
                     $data = json_decode($jsonKelDomisili, true);
-                    $kelDomisili = $data['nama'];   
-                
+                    $kelDomisili = $data['nama'];
+
                 $final_domisili = $request->alamat_domisili.", Kelurahan ".$kelDomisili.", Kecamatan ".$kecDomisili.", ".$kabkotDomisili.", ".$provDomisili;
             } else {
                 $final_domisili = $user->alamat_domisili;
@@ -425,7 +439,7 @@ class CrudUserController extends Controller
                 $request->foto->move('storage/upload/profil/', $newName );
                 $user->foto = $newName;
             }
-            
+
             if ($request->hasFile('signature')) {
                 $file = $request->file('signature');
                 $originalName = $file->getClientOriginalName();
@@ -433,7 +447,7 @@ class CrudUserController extends Controller
                 $request->signature->move('storage/upload/ttd/', $newName );
                 $user->signature = $newName;
             }
-            
+
             $user->bio = $request->bio ?? $user->bio;
             $user->updated_at = Carbon::now();
 
@@ -459,7 +473,7 @@ class CrudUserController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'required'
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),
@@ -492,12 +506,12 @@ class CrudUserController extends Controller
 
     public function update_password(Request $request){
         try{
-            
+
             $validator = Validator::make($request->all(), [
                 'email' => 'required',
                 'password' => 'required',
             ]);
-            
+
             if ($validator->fails()) {
                 return response()->json([
                     'message' => $validator->errors(),

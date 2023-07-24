@@ -18,7 +18,6 @@ class MasterAkses extends Model
     protected $fillable = [
         'app_id',
         'user_id',
-        'logo_app',
         'level_akses'
     ];
 

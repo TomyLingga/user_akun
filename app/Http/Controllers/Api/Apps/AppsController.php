@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\Apps;
 
 use App\Http\Controllers\Controller;
+use App\Models\MasterAkses;
 use App\Models\MasterApps;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -13,7 +15,7 @@ use Illuminate\Database\QueryException;
 
 class AppsController extends Controller
 {
-    
+
     private $image_path = 'http://36.92.181.10:4763/storage/upload/icon/';
 
     public function index()
@@ -46,7 +48,7 @@ class AppsController extends Controller
             return response()->json(['message' => 'Failed to Fetch All Datas', 'code' => 500], 500);
         }
     }
-    
+
     public function index_all()
     {
         try{
@@ -105,6 +107,18 @@ class AppsController extends Controller
                     'logo_app' => $newName,
                     'status_app' => '0'
                 ]);
+
+                $users = User::all();
+
+                foreach ($users as $user) {
+                    $aksesData = [
+                        'user_id' => $user->id,
+                        'app_id' => $apps->app_id,
+                        'level_akses' => '1',
+                    ];
+
+                    MasterAkses::create($aksesData);
+                }
             }else{
                 return response()->json(['message' => 'Failed to Create Data.', 'code' => 500], 500);
             }
