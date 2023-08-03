@@ -187,7 +187,7 @@ class DivisionController extends Controller
         } catch (ModelNotFoundException $e) {
 
             return response()->json([
-                'message' => $this->messageFail,
+                'message' => "Something went wrong",
                 'err' => $e->getTrace()[0],
                 'errMsg' => $e->getMessage(),
                 'code' => 500,

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Division extends Model
 {
     use HasFactory, Notifiable;
-
+    protected $table = 'divisions';
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -22,6 +22,6 @@ class Division extends Model
 
     public function departments()
     {
-        return $this->hasMany(Departement::class, 'divisi_id');
+        return $this->hasMany(Department::class, 'divisi_id');
     }
 }

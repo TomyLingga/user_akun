@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Position;
 
 use App\Http\Controllers\Controller;
-use App\Models\Division;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -16,8 +15,9 @@ class DepartmentController extends Controller
     {
         try{
             $datas = Department::with('division')
-                                ->orderBy('division.divisi')
-                                ->get();
+                            ->orderBy('divisi_id', 'asc')
+                            ->orderBy('department', 'asc')
+                            ->get();
 
             if ($datas->isEmpty()) {
                 return response()->json([
@@ -104,11 +104,11 @@ class DepartmentController extends Controller
         try{
             $datas = Department::where('divisi_id', $id)->get();
 
-            if (is_null($data)) {
+            if (is_null($datas)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
             return response()->json([
-                'data' => $data,
+                'data' => $datas,
                 'message' => 'Data found',
                 'code' => 200,
                 'success' => true
@@ -176,7 +176,7 @@ class DepartmentController extends Controller
         } catch (ModelNotFoundException $e) {
 
             return response()->json([
-                'message' => $this->messageFail,
+                'message' => "Something went wrong",
                 'err' => $e->getTrace()[0],
                 'errMsg' => $e->getMessage(),
                 'code' => 500,
