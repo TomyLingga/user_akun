@@ -61,6 +61,8 @@ Route::group(['middleware' => 'token.checker'], function () {
     Route::get('user/login', [App\Http\Controllers\Api\Auth\UserController::class, 'show']);
     Route::get('user/get/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'get']);
     Route::post('user/update/{id}', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_update']);
+    Route::get('user/div/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'getByDiv']);
+    Route::get('user/dept/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'getByDept']);
 
     //akses
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);

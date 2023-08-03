@@ -49,7 +49,7 @@ class UserController extends Controller
     }
 
     public function show(Request $request)
-    {   
+    {
         try{
             $authorizationHeader = $request->header('Authorization');
 
@@ -59,7 +59,7 @@ class UserController extends Controller
                 return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
             }
             $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
-            
+
             $data = User::select('id', 'name', 'jabatan', 'divisi', 'departemen', 'grade', 'nrk')->findOrFail($decoded->sub);
             return response()->json([
                 'data' => $data,
@@ -77,9 +77,47 @@ class UserController extends Controller
     }
 
     public function get($id)
-    {   
+    {
         try{
             $data = User::findOrFail($id);
+            return response()->json([
+                'data' => $data,
+                'message' => 'Success to Fetch All Datas',
+                'code' => 200,
+                'success' => true
+            ], 200);
+        }catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json([
+                'message' => 'Something went wrong',
+                'code' => 500,
+                'success' => false
+            ], 500);
+        }
+    }
+
+    public function getByDept($id)
+    {
+        try{
+            $data = User::where('departemen', $id)->get();
+            return response()->json([
+                'data' => $data,
+                'message' => 'Success to Fetch All Datas',
+                'code' => 200,
+                'success' => true
+            ], 200);
+        }catch (\Illuminate\Database\QueryException $ex) {
+            return response()->json([
+                'message' => 'Something went wrong',
+                'code' => 500,
+                'success' => false
+            ], 500);
+        }
+    }
+
+    public function getByDiv($id)
+    {
+        try{
+            $data = User::where('divisi', $id)->get();
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',
