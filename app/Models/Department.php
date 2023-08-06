@@ -16,6 +16,7 @@ class Department extends Model
     protected $fillable = [
         'divisi_id',
         'department',
+        'kode',
         'status',
     ];
 

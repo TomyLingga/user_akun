@@ -16,6 +16,7 @@ class CreateDivisionTable extends Migration
         Schema::create('divisions', function (Blueprint $table) {
             $table->id();
             $table->string('divisi');
+            $table->string('kode');
             $table->foreignId('bom')->constrained('users');
             $table->string('status',15);
             $table->timestamps();

@@ -44,6 +44,7 @@ class DepartmentController extends Controller
             $validator = Validator::make($request->all(), [
                 'divisi_id' => 'required',
                 'department' => 'required',
+                'kode' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -57,6 +58,7 @@ class DepartmentController extends Controller
             $data = Department::create([
                 'divisi_id' => $request->get('divisi_id'),
                 'department' => $request->get('department'),
+                'kode' => $request->get('kode'),
                 'status' => '1'
             ]);
 
@@ -131,10 +133,12 @@ class DepartmentController extends Controller
             }
 
             $divisi_id = $request->filled('divisi_id') ? $request->get('divisi_id') : $data->divisi_id;
+            $kode = $request->filled('kode') ? $request->get('kode') : $data->kode;
             $department = $request->filled('department') ? $request->get('department') : $data->department;
 
             $data->update([
                 'divisi_id' => $divisi_id,
+                'kode' => $kode,
                 'department' => $department,
             ]);
 

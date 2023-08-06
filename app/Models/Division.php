@@ -15,6 +15,7 @@ class Division extends Model
     protected $fillable = [
         'divisi',
         'bom',
+        'kode',
         'status',
     ];
 

@@ -17,6 +17,7 @@ class CreateDeparmentTable extends Migration
             $table->id();
             $table->foreignId('divisi_id')->constrained('division');
             $table->string('department');
+            $table->string('kode');
             $table->string('status',15);
             $table->timestamps();
         });

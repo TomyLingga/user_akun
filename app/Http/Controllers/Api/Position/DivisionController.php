@@ -77,6 +77,7 @@ class DivisionController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'divisi' => 'required',
+                'kode' => 'required',
                 'bom' => 'required',
             ]);
 
@@ -90,6 +91,7 @@ class DivisionController extends Controller
 
             $data = Division::create([
                 'divisi' => $request->get('divisi'),
+                'kode' => $request->get('kode'),
                 'bom' => $request->get('bom'),
                 'status' => '1'
             ]);
@@ -142,10 +144,12 @@ class DivisionController extends Controller
             }
 
             $divisi = $request->filled('divisi') ? $request->get('divisi') : $data->divisi;
+            $kode = $request->filled('kode') ? $request->get('kode') : $data->kode;
             $bom = $request->filled('bom') ? $request->get('bom') : $data->bom;
 
             $data->update([
                 'divisi' => $divisi,
+                'kode' => $kode,
                 'bom' => $bom,
             ]);
 
