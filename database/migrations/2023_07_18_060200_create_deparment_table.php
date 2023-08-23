@@ -15,7 +15,7 @@ class CreateDeparmentTable extends Migration
     {
         Schema::create('departments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('divisi_id')->constrained('division');
+            $table->foreignId('divisi_id')->constrained('divisions');
             $table->string('department');
             $table->string('kode');
             $table->string('status',15);
@@ -30,6 +30,6 @@ class CreateDeparmentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deparment');
+        Schema::dropIfExists('deparments');
     }
 }
