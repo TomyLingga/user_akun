@@ -79,7 +79,10 @@ class UserController extends Controller
     public function get($id)
     {
         try{
-            $data = User::findOrFail($id);
+            $data = User::where('nrk', '!=', 'ADM')
+                    ->where('grade', '!=', '0')
+                    ->findOrFail($id);
+
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',
