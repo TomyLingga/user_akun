@@ -33,6 +33,7 @@ class AdminItChecker
                                         ->first();
 
                 if ($decoded && $akses->level_akses >= 10 && Carbon::now()->timestamp < $decoded->exp) {
+                    $request->merge(['user_token' => $authorizationHeader, 'decoded' => $decoded]);
                     return $next($request);
                 }else{
                     return response()->json(['code' => 401,'error' => 'Unauthorized'], 401);

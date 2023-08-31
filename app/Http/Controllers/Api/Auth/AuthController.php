@@ -36,6 +36,8 @@ class AuthController extends Controller
             'divisi' => $user->divisi,
             'nrk' => $user->nrk,
             'grade' => $user->grade,
+            'foto' => $user->foto,
+            'signature' => $user->signature,
             'iat' => time(),
             'exp' => time() + (4 * 60 * 60) // token will expire in 1 hour
         ];
@@ -55,7 +57,7 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-    {   
+    {
         // $token = $request->cookie('jwt');
         $authorizationHeader = $request->header('Authorization');
 
@@ -73,7 +75,7 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200);
     }
-    
+
     public function auth_checker(Request $request)
     {
         $authorizationHeader = $request->header('Authorization');
@@ -86,7 +88,7 @@ class AuthController extends Controller
 
         try {
             $user = User::where('remember_token', $token)->firstOrFail();
-            
+
             return response()->json([
                 'success' => true,
                 'code' => 200
@@ -97,7 +99,7 @@ class AuthController extends Controller
                 'code' => 500
             ]);
         }
-        
+
     }
 
     //

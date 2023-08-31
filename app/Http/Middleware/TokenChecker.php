@@ -21,13 +21,14 @@ class TokenChecker
             } else {
                 return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
             }
-        
+
         if ($jwt) {
             try {
                 $user = User::where('remember_token', $jwt)->first();
                 $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
 
                 if ($user && Carbon::now()->timestamp < $decoded->exp) {
+                    $request->merge(['user_token' => $authorizationHeader, 'decoded' => $decoded]);
                     return $next($request);
                 }else{
                     return response()->json(['error' => 'You do not have access for this', 'code' => 401], 401);

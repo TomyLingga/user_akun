@@ -33,6 +33,7 @@ class AdminSDMMiddleware
                                         ->first();
 
                 if ($decoded && $akses->level_akses >= 8 && Carbon::now()->timestamp < $decoded->exp) {
+                    $request->merge(['user_token' => $authorizationHeader, 'decoded' => $decoded]);
                     return $next($request);
                 }else{
                     return response()->json(['error' => 'You do not have access for this', 'code' => 401], 401);

@@ -67,7 +67,7 @@ Route::group(['middleware' => 'token.checker'], function () {
     //akses
     Route::get('akses/app/get/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showApp']);
     Route::get('akses/user/get/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showUser']);
-    Route::get('akses/mine/{app_id}/{user_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showMine']);
+    Route::get('akses/mine/{app_id}', [App\Http\Controllers\Api\Akses\AksesController::class, 'showMine']);
 
     //divisi
     Route::get('division', [App\Http\Controllers\Api\Position\DivisionController::class, 'index']);
