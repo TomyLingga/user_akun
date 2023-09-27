@@ -36,6 +36,7 @@ class AuthController extends Controller
             'divisi' => $user->divisi,
             'nrk' => $user->nrk,
             'grade' => $user->grade,
+            'no_hp' => $user->noHP,
             'foto' => $user->foto,
             'signature' => $user->signature,
             'iat' => time(),
