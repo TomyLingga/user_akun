@@ -79,7 +79,7 @@ class UserController extends Controller
     public function get($id)
     {
         try{
-            $data = User::findOrFail($id);
+            $data = User::with('department', 'division')->findOrFail($id);
             // $data = User::where('nrk', '!=', 'ADM')
             //         ->where('grade', '!=', '0')
             //         ->findOrFail($id);

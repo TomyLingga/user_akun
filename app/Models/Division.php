@@ -25,4 +25,9 @@ class Division extends Model
     {
         return $this->hasMany(Department::class, 'divisi_id');
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'divisi');
+    }
 }

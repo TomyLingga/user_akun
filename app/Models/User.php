@@ -82,4 +82,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(MasterAkses::class, 'user_id');
     }
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class, 'divisi');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departemen');
+    }
 }
