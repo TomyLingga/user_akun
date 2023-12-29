@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    private $foto_path = 'http://36.92.181.10:4763/storage/upload/profil/';
+    private $signature_path = 'http://36.92.181.10:4763/storage/upload/profil/';
+
     public function index()
     {
         try{
@@ -83,6 +86,8 @@ class UserController extends Controller
             // $data = User::where('nrk', '!=', 'ADM')
             //         ->where('grade', '!=', '0')
             //         ->findOrFail($id);
+            $data->foto = $this->foto_path.$data->foto;
+            $data->signature = $this->signature_path.$data->signature;
 
             return response()->json([
                 'data' => $data,
@@ -109,6 +114,12 @@ class UserController extends Controller
                 'code' => 200,
                 'success' => true
             ], 200);
+
+            foreach ( $data as $key => $file ) {
+                $file->foto = $this->foto_path.$file->foto;
+                $file->signature = $this->signature_path.$file->signature;
+            }
+
         }catch (\Illuminate\Database\QueryException $ex) {
             return response()->json([
                 'message' => 'Something went wrong',
@@ -122,6 +133,12 @@ class UserController extends Controller
     {
         try{
             $data = User::where('divisi', $id)->get();
+
+            foreach ( $data as $key => $file ) {
+                $file->foto = $this->foto_path.$file->foto;
+                $file->signature = $this->signature_path.$file->signature;
+            }
+
             return response()->json([
                 'data' => $data,
                 'message' => 'Success to Fetch All Datas',
