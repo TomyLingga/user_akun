@@ -40,7 +40,7 @@ class AuthController extends Controller
             'foto' => $user->foto,
             'signature' => $user->signature,
             'iat' => time(),
-            'exp' => time() + (20 * 60 * 60)
+            'exp' => time() + (7 * 24 * 60 * 60)
         ];
 
         $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
