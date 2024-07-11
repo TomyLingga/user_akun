@@ -96,7 +96,7 @@ class AksesController extends Controller
     public function show($akses_id)
     {
         try{
-            $data = MasterAkses::where('akses_id', '=', $akses_id)->first();
+            $data = MasterAkses::where('akses_id', '=', $akses_id)->with(['user', 'apps'])->first();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
@@ -118,7 +118,7 @@ class AksesController extends Controller
     public function showApp($app_id)
     {
         try{
-            $data = MasterAkses::where('app_id', '=', $app_id)->get();
+            $data = MasterAkses::where('app_id', '=', $app_id)->with(['user', 'apps'])->get();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
@@ -140,7 +140,7 @@ class AksesController extends Controller
     public function showUser($user_id)
     {
         try{
-            $data = MasterAkses::where('user_id', '=', $user_id)->get();
+            $data = MasterAkses::where('user_id', '=', $user_id)->with(['user', 'apps'])->get();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
@@ -163,7 +163,7 @@ class AksesController extends Controller
     {
         try{
             $userId = $this->userData->sub;
-            $data = MasterAkses::where('user_id', $userId)->where('app_id', $app_id)->first();
+            $data = MasterAkses::where('user_id', $userId)->where('app_id', $app_id)->with(['user', 'apps'])->first();
             if (is_null($data)) {
                 return response()->json(['message' => 'Data not found', 'code' => 404], 404);
             }
