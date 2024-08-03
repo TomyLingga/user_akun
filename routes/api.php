@@ -47,6 +47,10 @@ Route::post('password/update', [App\Http\Controllers\Api\Auth\CrudUserController
 
 Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login']);
 
+
+Route::get('user', [App\Http\Controllers\Api\Auth\UserController::class, 'index']);
+Route::get('user/get/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'get']);
+
 Route::group(['middleware' => 'token.checker'], function () {
     Route::get('/redirect', [\App\Http\Controllers\Api\PortalController::class, 'show']);
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout']);
@@ -57,9 +61,7 @@ Route::group(['middleware' => 'token.checker'], function () {
     Route::get('app/get/{app_id}', [App\Http\Controllers\Api\Apps\AppsController::class, 'show']);
 
     //user
-    Route::get('user', [App\Http\Controllers\Api\Auth\UserController::class, 'index']);
     Route::get('user/login', [App\Http\Controllers\Api\Auth\UserController::class, 'show']);
-    Route::get('user/get/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'get']);
     Route::post('user/update/{id}', [App\Http\Controllers\Api\Auth\CrudUserController::class, 'user_update']);
     Route::get('user/div/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'getByDiv']);
     Route::get('user/dept/{id}', [App\Http\Controllers\Api\Auth\UserController::class, 'getByDept']);
