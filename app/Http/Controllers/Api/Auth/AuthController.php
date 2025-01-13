@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 use Firebase\JWT\JWT;
 use App\Http\Controllers\Controller;
+use App\Models\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -45,8 +46,10 @@ class AuthController extends Controller
 
         $token = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
 
-        $user->remember_token = $token;
-        $user->save();
+        Token::create([
+            'user_id' => $user->id,
+            'token' => $token,
+        ]);
 
         return response()->json(['message' => 'Successfully login','token' => $token, 'code' => 200, 'payload' => $payload], 200)
                         // ->withCookie(cookie('jwt', $token, time() + (4 * 60 * 60)));
@@ -59,7 +62,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // $token = $request->cookie('jwt');
+        // Extract the token from the Authorization header
         $authorizationHeader = $request->header('Authorization');
 
         if (strpos($authorizationHeader, 'Bearer ') === 0) {
@@ -68,17 +71,19 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
         }
 
-        $user = User::where('remember_token', $token)->first();
-        $user->remember_token = null;
-        $user->save();
+        // Find and delete the token from the Token model
+        $deleted = Token::where('token', $token)->delete();
 
-        //set the Authorization value to null
-
-        return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200);
+        if ($deleted) {
+            return response()->json(['message' => 'Successfully logged out', 'code' => 200], 200);
+        } else {
+            return response()->json(['error' => 'Token not found', 'code' => 404], 404);
+        }
     }
 
     public function auth_checker(Request $request)
     {
+        // Extract the token from the Authorization header
         $authorizationHeader = $request->header('Authorization');
 
         if (strpos($authorizationHeader, 'Bearer ') === 0) {
@@ -88,20 +93,23 @@ class AuthController extends Controller
         }
 
         try {
-            $user = User::where('remember_token', $token)->firstOrFail();
+            // Check if the token exists in the Token model
+            $tokenEntry = \App\Models\Token::where('token', $token)->firstOrFail();
 
             return response()->json([
                 'success' => true,
-                'code' => 200
+                'code' => 200,
+                'user_id' => $tokenEntry->user_id, // Optionally return the user ID
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'code' => 500
+                'code' => 401, // Use 401 for unauthorized
+                'error' => 'Token not found or invalid',
             ]);
         }
-
     }
+
 
     //
 

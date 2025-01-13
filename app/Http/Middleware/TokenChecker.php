@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Token;
 use Closure;
 use App\Models\User;
 use Firebase\JWT\JWT;
@@ -16,30 +17,36 @@ class TokenChecker
     {
         $authorizationHeader = $request->header('Authorization');
 
-            if (strpos($authorizationHeader, 'Bearer ') === 0) {
-                $jwt = str_replace('Bearer ', '', $authorizationHeader);
-            } else {
-                return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
-            }
+        if (strpos($authorizationHeader, 'Bearer ') === 0) {
+            $jwt = str_replace('Bearer ', '', $authorizationHeader);
+        } else {
+            return response()->json(['error' => 'Invalid Authorization header', 'code' => 401], 401);
+        }
 
         if ($jwt) {
             try {
-                $user = User::where('remember_token', $jwt)->first();
+                // Decode the JWT token
                 $decoded = JWT::decode($jwt, new Key(env('JWT_SECRET'), 'HS256'));
 
-                if ($user && Carbon::now()->timestamp < $decoded->exp) {
+                // Check if the token exists in the Token model
+                $tokenEntry = Token::where('token', $jwt)->first();
+
+                if ($tokenEntry && Carbon::now()->timestamp < $decoded->exp) {
+                    // Add token and decoded payload to the request
                     $request->merge(['user_token' => $authorizationHeader, 'decoded' => $decoded]);
+
                     return $next($request);
-                }else{
+                } else {
                     return response()->json(['error' => 'You do not have access for this', 'code' => 401], 401);
                 }
             } catch (\Exception $e) {
-                // redirect ke login
-                return response()->json(['code' => 401,'error' => 'Invalid or expired token'], 401);
+                // Handle token decoding errors
+                return response()->json(['code' => 401, 'error' => 'Invalid or expired token'], 401);
             }
         }
 
-        // Redirect to login or return an error response
-        return response()->json(['code' => 401,'error' => 'Unauthorized'], 401);
+        // Return unauthorized if no JWT is provided
+        return response()->json(['code' => 401, 'error' => 'Unauthorized'], 401);
     }
+
 }
